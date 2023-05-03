@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { User } from '@/types/user'
 export const useUserStore = defineStore('cp-user', () => {
   // 空对象变量用as断言指定类型
-  const user = ref<User>({} as User)
+  const user = ref({} as User)
 
   // 存储用户信息=>登陆成功
   const setUser = (userData: User) => {
