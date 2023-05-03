@@ -1,7 +1,7 @@
 /**
  * 用户相关ts类型
  */
-type User = {
+export type User = {
   token: string
   id: string
   account: string
