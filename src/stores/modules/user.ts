@@ -23,6 +23,12 @@ export const useUserStore = defineStore(
   },
   {
     // 开启本模块数据持久化
-    persist: true
+    // persist: true
+    persist: {
+      // 自定义key的名字
+      key: 'user',
+      // 指定哪些变量持久化
+      paths: ['user']
+    }
   }
 )
