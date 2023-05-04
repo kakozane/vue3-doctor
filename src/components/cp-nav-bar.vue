@@ -1,32 +1,43 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+const router = useRouter()
+// 父传子
+defineProps<{
+  middle: string
+  right: string
+}>()
 const onClickLeft = () => {
   // TODO 点击左侧返回按钮
+  if (history.state.back) {
+    router.back()
+  } else {
+    router.push('/')
+  }
 }
-const onClickRight = () => {
-  // TODO 点击右侧文字按钮
-}
+// 子传父
+const emit = defineEmits<{
+  (e: 'click-right'): void
+}>()
 </script>
 
 <template>
   <van-nav-bar
     fixed
     :left-arrow="true"
-    title="登录"
-    right-text="注册"
+    :title="middle"
+    :right-text="right"
     @click-left="onClickLeft"
-    @click-right="onClickRight"
+    @click-right="emit('click-right')"
   ></van-nav-bar>
 </template>
 
 <style lang="scss" scoped>
-// 样式穿透
-::v-deep() {
+:deep() {
   .van-nav-bar {
     &__arrow {
       font-size: 18px;
       color: var(--cp-text1);
     }
-
     &__text {
       font-size: 15px;
     }
