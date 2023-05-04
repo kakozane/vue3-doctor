@@ -47,6 +47,8 @@ const clickRight = () => {
     <!-- <svg aria-hidden="true">
       <use href="#icon-login-eye-off" />
     </svg> -->
+    <cp-icon name="home-docs" />
+    <cp-icon name="consult-alipay" />
   </div>
 </template>
 
