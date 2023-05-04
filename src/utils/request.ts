@@ -1,69 +1,69 @@
-import { useUserStore } from '@/stores'
 import router from '@/router'
-import axios from 'axios'
-import { Toast } from 'vant'
-// 1. 新axios实例，基础配置
-const baseURL = 'https://consult-api.itheima.net/'
-const request = axios.create({
+import axios, { AxiosError, type Method } from 'axios'
+import { showFailToast } from 'vant'
+import { useUserStore } from '@/stores'
+export const baseURL = 'https://consult-api.itheima.net/'
+const instance = axios.create({
+  // 1. 基础地址，超时时间
   baseURL,
-  timeout: 10000
+  timeout: 10000,
 })
 
-// 2. 请求拦截器，携带token  发请求之前 header加token
-request.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
+    // 2. 携带token
     const store = useUserStore()
     if (store.user?.token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${store.user?.token}`
+      config.headers.Authorization = `Bearer ${store.user.token}`
     }
     return config
   },
   (err) => Promise.reject(err)
 )
 
-// 3. 响应拦截器，剥离无效数据，401拦截
-request.interceptors.response.use(
+instance.interceptors.response.use(
   (res) => {
-    // 后台约定，响应成功，但是code不是10000，是业务逻辑失败
-    if (res.data?.code !== 10000) {
-      Toast.fail(res.data?.message || '业务失败')
+    // 3. 处理业务失败
+    if (res.data.code !== 10000) {
+      // 错误提示
+      showFailToast(res.data.message || '业务失败')
+      // 返回 错误的promise
       return Promise.reject(res.data)
+      // 传入 code 将来catch的时候可以使用
     }
-    // 业务逻辑成功，返回响应数据，作为axios成功的结果
+    // 4. 摘取核心响应数据
     return res.data
   },
-  (err) => {
-    // token过期了
-    if (err.response.status === 401) {
-      // 删除用户信息
+  (err: AxiosError) => {
+    // 5. 处理401错误
+    if (err.response?.status === 401) {
+      // 清除本地的用户信息
       const store = useUserStore()
       store.delUser()
-      // 跳转登录，带上接口失效所在页面的地址，登录完成后回跳使用
-      // router.push({
-      //   path: '/login',
-      //   query: { returnUrl: router.currentRoute.value.fullPath }
-      // })
-      router.push(`/login?returnUrl=${router.currentRoute.value.fullPath}`)
+      // 跳转到登录页面，携带当前访问页面的地址（包含参数的）
+      router.push({
+        path: '/login',
+        query: { returnUrl: router.currentRoute.value.fullPath },
+      })
     }
     return Promise.reject(err)
   }
 )
-// 这个需要替换axsio.request默认的响应成功后的结果类型
-// 之前是：传 { name: string } 然后res是   res = { data: { name: string } }
-// 但现在：在响应拦截器中返回了 res.data  也就是将来响应成功后的结果，和上面的类型一致吗？
-// 所以要：request<数据类型，数据类型>() 这样才指定了 res.data 的类型
-// 但是呢：后台返回的数据结构相同，所以可以抽取相同的类型
-// type Data<T> = {
-//   code: number
-//   message: string
-//   data: T
-// }
-// // 4. 请求工具函数
-// const request = <T>(url: string, method: Method = 'get', submitData?: object) => {
-//   return instance.request<T, Data<T>>({
-//     url,
-//     method,
-//     [method.toLowerCase() === 'get' ? 'params' : 'data']: submitData
-//   })
-// }
-export { baseURL, request }
+
+export default instance
+
+type Data<T> = {
+  code: number
+  message: string
+  data: T
+}
+
+export const request = <T>(url: string, method: Method = 'GET', submitData?: object) => {
+  // 参数：地址，请求方式，提交的数据
+  // 返回：promise
+  return instance.request<any, Data<T>>({
+    url,
+    method,
+    [method.toUpperCase() === 'GET' ? 'params' : 'data']: submitData,
+  })
+}

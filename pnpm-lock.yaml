@@ -11,8 +11,8 @@ dependencies:
     specifier: ^3.1.0
     version: registry.npmmirror.com/pinia-plugin-persistedstate@3.1.0(pinia@2.0.32)
   vant:
-    specifier: ^4.2.1
-    version: registry.npmmirror.com/vant@4.2.1(vue@3.2.47)
+    specifier: ^4.3.1
+    version: registry.npmmirror.com/vant@4.3.1(vue@3.2.47)
   vue:
     specifier: ^3.2.47
     version: registry.npmmirror.com/vue@3.2.47
@@ -4438,11 +4438,11 @@ packages:
       spdx-expression-parse: registry.npmmirror.com/spdx-expression-parse@3.0.1
     dev: true
 
-  registry.npmmirror.com/vant@4.2.1(vue@3.2.47):
-    resolution: {integrity: sha512-Sbdu1Og68KhYfYEpLRXjmCynUAytqNli7IQRc9BfwUpp4XfX1BtSDANp7diYIhYfPwpNVrO7+y4KDXR+edGBSA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vant/-/vant-4.2.1.tgz}
-    id: registry.npmmirror.com/vant/4.2.1
+  registry.npmmirror.com/vant@4.3.1(vue@3.2.47):
+    resolution: {integrity: sha512-SpdNRrG4ANZcZ/t56lilk0rjdr50JygVK3n7IYhDlhEeG3FPYJ0J5j4rCKsmTt7xRGKt4AkgaRyKvOr3zzIkuA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vant/-/vant-4.3.1.tgz}
+    id: registry.npmmirror.com/vant/4.3.1
     name: vant
-    version: 4.2.1
+    version: 4.3.1
     peerDependencies:
       vue: ^3.0.0
     dependencies:
