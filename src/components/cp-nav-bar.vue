@@ -3,8 +3,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 // 父传子
 defineProps<{
-  middle: string
-  right: string
+  title: string
+  rightText: string
 }>()
 const onClickLeft = () => {
   // TODO 点击左侧返回按钮
@@ -24,8 +24,8 @@ const emit = defineEmits<{
   <van-nav-bar
     fixed
     :left-arrow="true"
-    :title="middle"
-    :right-text="right"
+    :title="title"
+    :rightText="rightText"
     @click-left="onClickLeft"
     @click-right="emit('click-right')"
   ></van-nav-bar>

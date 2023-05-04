@@ -6,7 +6,7 @@ const clickRight = () => {
 
 <template>
   <div class="login">
-    <cp-nav-bar middle="登录" right="注册" @click-right="clickRight"></cp-nav-bar>
+    <cp-nav-bar title="登录" rightText="注册" @click-right="clickRight"></cp-nav-bar>
   </div>
 </template>
 
