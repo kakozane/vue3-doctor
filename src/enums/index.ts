@@ -9,7 +9,6 @@
 //   Left = 2,
 //   Right = 3
 // }
-
 // 值默认是从0开始以此类推
 // enum Direction {
 //   Up,
@@ -17,7 +16,6 @@
 //   Left,
 //   Right
 // }
-
 // 如果给了一个默认的数字，一样的
 // enum Direction {
 //   Up = 5,
