@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { mobileRules, passwordRules } from '@/utils/rules'
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { loginByPassword } from '@/api/user'
-import { showFailToast } from 'vant'
+import { showFailToast, type FormInstance } from 'vant'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -35,6 +35,16 @@ const login = async () => {
     console.log(error)
   }
 }
+
+// 发送验证码
+const isPass = ref(true) // true
+const code = ref('')
+const time = ref(0)
+const form = ref<FormInstance>() // 获取表单实例
+let timeId: number // 倒计时定时器ID
+const send = async () => {
+  if (time.value > 0) return
+}
 </script>
 
 <template>
@@ -42,20 +52,35 @@ const login = async () => {
     <CpNavBar title="登录" rightText="注册" @click-right="$router.push('/register')"></CpNavBar>
     <!-- 头部 -->
     <div class="login-head">
-      <h3>密码登录</h3>
-      <a href="javascript:;">
-        <span>短信验证码登录</span>
+      <h3>{{ isPass ? '密码登录' : '短信验证码登录' }}</h3>
+      <a href="javascript:;" @click="isPass = !isPass">
+        <span>{{ isPass ? '短信验证码登录' : '密码登录' }}</span>
         <VanIcon name="arrow"></VanIcon>
       </a>
     </div>
     <!-- 表单 -->
     <VanForm @submit="login" autocomplete="off">
       <VanField v-model="mobile" :rules="mobileRules" placeholder="请输入手机号" type="tel"></VanField>
-      <VanField v-model="password" :rules="passwordRules" placeholder="请输入密码" :type="isShowPwd ? 'text' : 'password'">
+      <!--  密码输入框 -->
+      <VanField
+        v-if="isPass"
+        v-model="password"
+        :rules="passwordRules"
+        placeholder="请输入密码"
+        :type="isShowPwd ? 'text' : 'password'"
+      >
         <template #button>
           <CpIcon @click="isShowPwd = !isShowPwd" :name="`login-eye-${isShowPwd ? 'on' : 'off'}`" />
         </template>
       </VanField>
+      <!--  验证码输入 -->
+      <VanField v-else v-model="code" :rules="codeRules" placeholder="短信验证码">
+        <template #button>
+          <span @click="send" :class="{ active: time > 0 }">
+            {{ time > 0 ? `${time}s后再次发送` : '发送验证码' }}
+          </span>
+        </template> </VanField
+      >>
       <div class="cp-cell">
         <VanCheckbox v-model="agree">
           <span>我已同意</span>
