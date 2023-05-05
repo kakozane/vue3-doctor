@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -23,4 +24,8 @@ const router = createRouter({
   routes,
 })
 
+router.beforeEach((to, from) => {
+  const store = useUserStore()
+  if (!store.user.token && !['login', '/other'].includes(to.path)) return '/login'
+})
 export default router
