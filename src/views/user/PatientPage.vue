@@ -3,11 +3,12 @@ import { addPatient, delPatient, editPatient, getPatientList } from '@/api/user'
 import type { PatientList, Patient } from '@/types/user'
 import { ref, onMounted, computed } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
-import { showConfirmDialog, showSuccessToast, showToast, type FormInstance } from 'vant'
+import { showConfirmDialog, showFailToast, showSuccessToast, showToast, type FormInstance } from 'vant'
 import { useRoute } from 'vue-router'
 // import { useConsultStore } from '@/stores'
 import router from '@/router'
 import { useConsultStore } from '@/stores/modules/consult'
+import Validator from 'id-validator'
 // 组件挂载完毕，获取数据
 const list = ref<PatientList>([])
 const loadList = async () => {
@@ -64,26 +65,41 @@ const defaultFlag = computed({
   set: (value) => (patient.value.defaultFlag = value ? 1 : 0),
 })
 
-// 进行提交
+// 保存进行提交
 const form = ref<FormInstance>()
 const onSubmit = async () => {
-  // 表单整体校验 validate 进行校验
-  await form.value?.validate()
-  // 性别校验
-  // 取出身份证倒数第二位，%2之后  1 男  0 女
-  const gender = +patient.value.idCard.slice(-2, -1) % 2
-  if (gender !== patient.value.gender) {
-    await showConfirmDialog({
-      title: '温馨提示',
-      message: '填写的性别和身份证上的不一致\n您确认提交吗？',
-    })
+  // // 表单整体校验 validate 进行校验 校验患者名字和身份证 非空校验 必须填值
+  // await form.value?.validate()
+  // // 性别校验
+  // // 取出身份证倒数第二位，%2之后  1 男  0 女
+  // const gender = +patient.value.idCard.slice(-2, -1) % 2
+  // if (gender !== patient.value.gender) {
+  //   await showConfirmDialog({
+  //     title: '温馨提示',
+  //     message: '填写的性别和身份证上的不一致\n您确认提交吗？',
+  //   })
+  // }
+  // // 提交即可  添加 或者 编辑
+  // patient.value.id ? await editPatient(patient.value) : await addPatient(patient.value)
+  // // 成功：关闭添加患者界面，加载患者列表，成功提示
+  // show.value = false
+  // loadList()
+  // showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
+  if (!patient.value.name) return showFailToast('请输入真实姓名')
+  if (!patient.value.idCard) return showFailToast('请输入身份证号')
+  // 身份证校验
+  const validate = new Validator()
+  if (!validate.isValid(patient.value.idCard)) return showFailToast('身份证格式错误')
+  const { sex } = validate.getInfo(patient.value.idCard)
+  if (patient.value.gender !== sex) return showFailToast('性别和身份证不符')
+  try {
+    await addPatient(patient.value)
+    show.value = false
+    loadList()
+    showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
+  } catch (error) {
+    console.log(error)
   }
-  // 提交即可  添加 或者 编辑
-  patient.value.id ? await editPatient(patient.value) : await addPatient(patient.value)
-  // 成功：关闭添加患者界面，加载患者列表，成功提示
-  show.value = false
-  loadList()
-  showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
 }
 
 // 删除患者
