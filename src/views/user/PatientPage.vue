@@ -2,7 +2,7 @@
 import { addPatient, delPatient, editPatient, getPatientList } from '@/api/user'
 import type { PatientList, Patient } from '@/types/user'
 import { ref, onMounted, computed } from 'vue'
-// import { nameRules, idCardRules } from '@/utils/rules'
+import { nameRules, idCardRules } from '@/utils/rules'
 import { showConfirmDialog, showSuccessToast, showToast, type FormInstance } from 'vant'
 import { useRoute } from 'vue-router'
 // import { useConsultStore } from '@/stores'
@@ -24,11 +24,13 @@ onMounted(() => {
   loadList()
 })
 
+// 性别选项
 const options = [
   { label: '男', value: 1 },
   { label: '女', value: 0 },
 ]
-
+// 存储选中的性别value值
+// const gender = ref(1)
 // 控制popup弹层
 const show = ref(false)
 const showPopup = (item?: Patient) => {

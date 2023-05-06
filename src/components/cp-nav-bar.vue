@@ -2,11 +2,18 @@
 import { useRouter } from 'vue-router'
 const router = useRouter()
 // 父传子
-defineProps<{
+const props = defineProps<{
   title: string
   rightText?: string
+  back?: () => void // 接收一个back函数 自定义返回逻辑
 }>()
 const onClickLeft = () => {
+  // 自定义返回逻辑
+  if (props.back) {
+    // return 防止代码往后执行
+    return props.back()
+  }
+
   // TODO 点击左侧返回按钮
   if (history.state.back) {
     router.back()
