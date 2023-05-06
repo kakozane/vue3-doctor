@@ -5,9 +5,8 @@ import { ref, onMounted, computed } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
 import { showConfirmDialog, showFailToast, showSuccessToast, showToast, type FormInstance } from 'vant'
 import { useRoute } from 'vue-router'
-// import { useConsultStore } from '@/stores'
+import { useConsultStore } from '@/stores'
 import router from '@/router'
-import { useConsultStore } from '@/stores/modules/consult'
 import Validator from 'id-validator'
 // 组件挂载完毕，获取数据
 const list = ref<PatientList>([])
@@ -21,7 +20,6 @@ const loadList = async () => {
     else patientId.value = list.value[0].id
   }
 }
-
 onMounted(() => {
   loadList()
 })
@@ -93,7 +91,7 @@ const onSubmit = async () => {
   const { sex } = validate.getInfo(patient.value.idCard)
   if (patient.value.gender !== sex) return showFailToast('性别和身份证不符')
   try {
-    await addPatient(patient.value)
+    patient.value.id ? await editPatient(patient.value) : await addPatient(patient.value)
     show.value = false
     loadList()
     showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')

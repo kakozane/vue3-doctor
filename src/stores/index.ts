@@ -7,3 +7,4 @@ export default pinia
 
 // 统一导出modules下仓库
 export * from './modules/user'
+export * from './modules/consult'

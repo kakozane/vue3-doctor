@@ -73,25 +73,25 @@ const onLogout = async () => {
       </div>
       <van-row>
         <van-col span="6">
-          <van-badge :content="user?.orderInfo.paidNumber || ''">
+          <van-badge :content="user?.orderInfo?.paidNumber || ''">
             <cp-icon name="user-paid" />
           </van-badge>
           <p>待付款</p>
         </van-col>
         <van-col span="6">
-          <van-badge :content="user?.orderInfo.receivedNumber || ''">
+          <van-badge :content="user?.orderInfo?.receivedNumber || ''">
             <cp-icon name="user-shipped" />
           </van-badge>
           <p>待发货</p>
         </van-col>
         <van-col span="6">
-          <van-badge :content="user?.orderInfo.shippedNumber || ''">
+          <van-badge :content="user?.orderInfo?.shippedNumber || ''">
             <cp-icon name="user-received" />
           </van-badge>
           <p>待收货</p>
         </van-col>
         <van-col span="6">
-          <van-badge :content="user?.orderInfo.finishedNumber || ''">
+          <van-badge :content="user?.orderInfo?.finishedNumber || ''">
             <cp-icon name="user-finished" />
           </van-badge>
           <p>已完成</p>
