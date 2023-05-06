@@ -4,7 +4,7 @@ const router = useRouter()
 // 父传子
 defineProps<{
   title: string
-  rightText: string
+  rightText?: string
 }>()
 const onClickLeft = () => {
   // TODO 点击左侧返回按钮
