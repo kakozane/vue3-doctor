@@ -7,6 +7,7 @@ import { showConfirmDialog, showSuccessToast, showToast, type FormInstance } fro
 import { useRoute } from 'vue-router'
 // import { useConsultStore } from '@/stores'
 import router from '@/router'
+import { useConsultStore } from '@/stores/modules/consult'
 // 组件挂载完毕，获取数据
 const list = ref<PatientList>([])
 const loadList = async () => {
@@ -44,6 +45,8 @@ const showPopup = (item?: Patient) => {
   show.value = true
 }
 // 新增患者表单数据
+
+// 准备一个默认值 方便后面复用
 const initPaient: Patient = {
   name: '',
   idCard: '',
