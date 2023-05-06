@@ -43,6 +43,7 @@ const showPopup = (item?: Patient) => {
   }
   show.value = true
 }
+// 新增患者表单数据
 const initPaient: Patient = {
   name: '',
   idCard: '',
@@ -50,8 +51,11 @@ const initPaient: Patient = {
   defaultFlag: 0,
 }
 const patient = ref<Patient>({ ...initPaient })
-
-// 支持复选框
+// 是否是默认患者 因为checkbox接收布尔值  而后端需要0或1  所以单独定义一个
+// 支持复选框  转换成0或1
+// watch(defaultFlag, () => {
+//   patient.value.defaultFlag = defaultFlag.value ? 1 : 0
+// })
 const defaultFlag = computed({
   get: () => (patient.value.defaultFlag === 1 ? true : false),
   set: (value) => (patient.value.defaultFlag = value ? 1 : 0),
@@ -153,14 +157,16 @@ const next = () => {
     <div class="patient-next" @click="next" v-if="isChange">
       <van-button type="primary" round block>下一步</van-button>
     </div>
-    <!-- 使用 popup 组件 -->
+    <!-- 使用 popup 弹层组件 -->
     <van-popup position="right" v-model:show="show">
+      <!-- 导航栏 -->
       <cp-nav-bar
         :title="patient.id ? '编辑患者' : '添加患者'"
         right-text="保存"
         :back="() => (show = false)"
         @click-right="onSubmit"
       ></cp-nav-bar>
+      <!--  新增患者表单 -->
       <van-form autocomplete="off" ref="form">
         <van-field v-model="patient.name" label="真实姓名" placeholder="请输入真实姓名" :rules="nameRules" />
         <van-field v-model="patient.idCard" label="身份证号" placeholder="请输入身份证号" :rules="idCardRules" />
@@ -172,10 +178,12 @@ const next = () => {
         </van-field>
         <van-field label="默认就诊人">
           <template #input>
+            <!-- 需要单独绑定一个布尔值 -->
             <van-checkbox v-model="defaultFlag" :icon-size="18" round />
           </template>
         </van-field>
       </van-form>
+      <!-- 表单结束 -->
       <!-- 删除按钮 -->
       <van-action-bar v-if="patient.id">
         <van-action-bar-button text="删除" @click="remove" />
