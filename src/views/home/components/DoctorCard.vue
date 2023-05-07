@@ -1,5 +1,5 @@
-<!-- <script lang="ts" setup>
-// import { useFollow } from '@/composables'
+<script lang="ts" setup>
+import { useFollow } from '@/composables'
 import type { Doctor } from '@/types/consult'
 
 defineProps<{
@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 // 关注逻辑
-// const { loading, follow } = useFollow()
+const { loading, follow } = useFollow()
 </script>
 <template>
   <div class="doctor-card">
@@ -56,4 +56,4 @@ defineProps<{
     width: 72px;
   }
 }
-</style> -->
+</style>

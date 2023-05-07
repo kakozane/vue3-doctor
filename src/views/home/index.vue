@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useConsultStore } from '@/stores'
 import KnowledgeList from './components/KnowledgeList.vue'
+import FollowDoctor from './components/FollowDoctor.vue'
 import { ConsultType } from '@/enums'
 const store = useConsultStore()
 const active = ref(1)
