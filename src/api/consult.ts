@@ -15,6 +15,7 @@ import type {
 } from '@/types/consult'
 import { request } from '@/utils/request'
 
+// 获取健康知识列表
 export const getKnowledgePage = (params: KnowledgeParams) => request<KnowledgePage>('patient/home/knowledge', 'GET', params)
 
 export const getDoctorPage = (params: PageParams) => request<DoctorPage>('home/page/doc', 'GET', params)

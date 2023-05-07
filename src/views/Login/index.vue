@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
-import { loginByMobile, loginByPassword, sendMobileCode } from '@/api/user'
-import { showToast, showFailToast, showSuccessToast, type FormInstance } from 'vant'
+import { loginByMobile, loginByPassword } from '@/api/user'
+import { showToast, showSuccessToast } from 'vant'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
-
+import { useSendCode } from './components/index'
 // 是否同意网站协议
 const agree = ref(false)
 const clickRight = () => {}
 // 手机号和密码 的响应变量
-const mobile = ref('13230000001')
+const mobile = ref('13230000007')
 const password = ref('abc12345')
 
 // 是否显示密码
@@ -29,31 +29,9 @@ const login = async () => {
   router.replace((route.query.returnUrl as string) || '/user')
   showSuccessToast('登录成功')
 }
-
 // 发送验证码
 const isPass = ref(true) // true
-const code = ref('')
-const time = ref(0)
-const form = ref<FormInstance>() // 获取表单实例
-let timeId: number // 倒计时定时器ID
-const send = async () => {
-  // 已经倒计时time的值大于0，此时不能发送验证码
-  if (time.value > 0) return
-  // 验证不通过报错，阻止程序继续执行
-  await form.value?.validate('mobile')
-  await sendMobileCode(mobile.value, 'login')
-  showSuccessToast('发送成功')
-  time.value = 60
-  // 倒计时
-  clearInterval(timeId)
-  timeId = window.setInterval(() => {
-    time.value--
-    if (time.value <= 0) window.clearInterval(timeId)
-  }, 1000)
-}
-onUnmounted(() => {
-  window.clearInterval(timeId)
-})
+const { code, time, form, send } = useSendCode(mobile.value)
 </script>
 
 <template>
@@ -108,17 +86,12 @@ onUnmounted(() => {
       </div>
     </VanForm>
     <!-- 底部 -->
-    <!-- <div class="login-other">
+    <div class="login-other">
       <van-divider>第三方登录</van-divider>
       <div class="icon">
         <img src="@/assets/qq.svg" alt="" />
       </div>
-    </div> -->
-    <!-- <svg aria-hidden="true">
-      <use href="#icon-login-eye-off" />
-    </svg> -->
-    <CpIcon name="home-docs" />
-    <CpIcon name="consult-alipay" />
+    </div>
   </div>
 </template>
 

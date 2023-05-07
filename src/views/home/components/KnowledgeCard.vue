@@ -2,6 +2,7 @@
 import { useFollow } from '@/composables'
 import type { Knowledge } from '@/types/consult'
 
+// 父传子 :item
 defineProps<{
   item: Knowledge
 }>()
