@@ -40,8 +40,8 @@
 
 // 问诊类型
 export enum ConsultType {
-  Doctor = 1,
-  Fast = 2,
+  Doctor = 1, //找医生
+  Fast = 2, // 极速问诊
   Medication = 3,
 }
 

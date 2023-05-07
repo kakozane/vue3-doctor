@@ -142,7 +142,7 @@ type TopDep = SubDep & {
   child: SubDep[]
 }
 
-// 病情描述对象
+// 病情描述对象  Pick可以指定选类型
 export type ConsultIllness = Pick<PartialConsult, 'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'>
 
 // 问诊订单预支付传参

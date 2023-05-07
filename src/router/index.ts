@@ -27,11 +27,11 @@ const router = createRouter({
       component: () => import('@/views/user/PatientPage.vue'),
       meta: { title: '家庭档案' },
     },
-    // {
-    //   path: '/consult/fast',
-    //   component: () => import('@/views/Consult/ConsultFast.vue'),
-    //   meta: { title: '极速问诊' },
-    // },
+    {
+      path: '/consult/fast',
+      component: () => import('@/views/consult/ConsultFast.vue'),
+      meta: { title: '极速问诊' },
+    },
     // {
     //   path: '/consult/dep',
     //   component: () => import('@/views/Consult/ConsultDep.vue'),
