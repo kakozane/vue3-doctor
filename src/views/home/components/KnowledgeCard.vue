@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFollow } from '@/composables'
+import { useFollow } from '@/hooks'
 import type { Knowledge } from '@/types/consult'
 
 // 父传子 :item

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  useCancelOrder,
-  useDeleteOrder,
-  useShowPrescription
-} from '@/composables'
+import { useCancelOrder, useDeleteOrder, useShowPrescription } from '@/hooks'
 import { OrderType } from '@/enums'
 import type { ConsultOrderItem } from '@/types/consult'
 import ConsultMore from './ConsultMore.vue'
@@ -50,7 +46,7 @@ const { onShowPrescription } = useShowPrescription()
       <span
         :class="{
           orange: item.status === OrderType.ConsultPay,
-          green: item.status === OrderType.ConsultChat
+          green: item.status === OrderType.ConsultChat,
         }"
       >
         {{ item.statusValue }}
@@ -71,44 +67,12 @@ const { onShowPrescription } = useShowPrescription()
       </div>
     </div>
     <div class="foot" v-if="item.status === OrderType.ConsultPay">
-      <van-button
-        :loading="loading"
-        @click="cancelConsultOrder(item)"
-        class="gray"
-        plain
-        size="small"
-        round
-        >取消问诊</van-button
-      >
-      <van-button
-        type="primary"
-        plain
-        size="small"
-        round
-        :to="`/user/consult/${item.id}`"
-      >
-        去支付
-      </van-button>
+      <van-button :loading="loading" @click="cancelConsultOrder(item)" class="gray" plain size="small" round>取消问诊</van-button>
+      <van-button type="primary" plain size="small" round :to="`/user/consult/${item.id}`"> 去支付 </van-button>
     </div>
     <div class="foot" v-if="item.status === OrderType.ConsultWait">
-      <van-button
-        :loading="loading"
-        @click="cancelConsultOrder(item)"
-        class="gray"
-        plain
-        size="small"
-        round
-        >取消问诊</van-button
-      >
-      <van-button
-        type="primary"
-        plain
-        size="small"
-        round
-        :to="`/room?orderId=${item.id}`"
-      >
-        继续沟通
-      </van-button>
+      <van-button :loading="loading" @click="cancelConsultOrder(item)" class="gray" plain size="small" round>取消问诊</van-button>
+      <van-button type="primary" plain size="small" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
     <div class="foot" v-if="item.status === OrderType.ConsultChat">
       <van-button
@@ -121,15 +85,7 @@ const { onShowPrescription } = useShowPrescription()
       >
         查看处方
       </van-button>
-      <van-button
-        type="primary"
-        plain
-        size="small"
-        round
-        :to="`/room?orderId=${item.id}`"
-      >
-        继续沟通
-      </van-button>
+      <van-button type="primary" plain size="small" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
     <div class="foot" v-if="item.status === OrderType.ConsultComplete">
       <!-- 更多组件 -->
@@ -138,36 +94,15 @@ const { onShowPrescription } = useShowPrescription()
         @on-preview="onShowPrescription(item.prescriptionId)"
         @on-delete="deleteConsultOrder(item)"
       ></consult-more>
-      <van-button
-        class="gray"
-        plain
-        size="small"
-        round
-        :to="`/room?orderId=${item.id}`"
-      >
-        问诊记录
-      </van-button>
-      <van-button v-if="item.evaluateId" class="gray" plain size="small" round>
-        查看评价
-      </van-button>
-      <van-button v-else type="primary" plain size="small" round>
-        写评价
-      </van-button>
+      <van-button class="gray" plain size="small" round :to="`/room?orderId=${item.id}`"> 问诊记录 </van-button>
+      <van-button v-if="item.evaluateId" class="gray" plain size="small" round> 查看评价 </van-button>
+      <van-button v-else type="primary" plain size="small" round> 写评价 </van-button>
     </div>
     <div class="foot" v-if="item.status === OrderType.ConsultCancel">
-      <van-button
-        :loading="deleteLoading"
-        @click="deleteConsultOrder(item)"
-        class="gray"
-        plain
-        size="small"
-        round
-      >
+      <van-button :loading="deleteLoading" @click="deleteConsultOrder(item)" class="gray" plain size="small" round>
         删除订单
       </van-button>
-      <van-button type="primary" plain size="small" round :to="`/`">
-        咨询其他的医生
-      </van-button>
+      <van-button type="primary" plain size="small" round :to="`/`"> 咨询其他的医生 </van-button>
     </div>
   </div>
 </template>

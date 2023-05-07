@@ -12,14 +12,18 @@ import { ref, onMounted } from 'vue'
 
 // Vue3概念：通过组合式API封装 数据逻辑 在一起的函数，组合式函数 useXxx
 // composable
+// 关注逻辑
 export const useFollow = (type: FollowType = 'doc') => {
   const loading = ref(false)
+  // 执行回调函数
   const follow = async (item: { id: string; likeFlag: 0 | 1 }) => {
     loading.value = true
     try {
       await followOrUnfollow(item.id, type)
       item.likeFlag = item.likeFlag === 1 ? 0 : 1
+      showSuccessToast(item.likeFlag === 1 ? '关注成功' : '取关成功')
     } finally {
+      // 无论执行成功还是错误 finally都会执行
       loading.value = false
     }
   }

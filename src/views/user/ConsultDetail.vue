@@ -6,11 +6,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ConsultMore from './components/ConsultMore.vue'
 import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
-import {
-  useCancelOrder,
-  useDeleteOrder,
-  useShowPrescription
-} from '@/composables'
+import { useCancelOrder, useDeleteOrder, useShowPrescription } from '@/hooks'
 import { useClipboard } from '@vueuse/core'
 import { showToast } from 'vant'
 
@@ -51,7 +47,7 @@ const show = ref(false)
           class="sta"
           :class="{
             orange: item.status === OrderType.ConsultPay,
-            green: item.status === OrderType.ConsultChat
+            green: item.status === OrderType.ConsultChat,
           }"
           >{{ item.statusValue }}</span
         >
@@ -72,14 +68,8 @@ const show = ref(false)
           title="患者信息"
           :value="`${item.patientInfo.name} | ${item.patientInfo.genderValue} | ${item.patientInfo.age}岁`"
         />
-        <van-cell
-          title="患病时长"
-          :value="getIllnessTimeText(item.illnessTime)"
-        />
-        <van-cell
-          title="就诊情况"
-          :value="getConsultFlagText(item.consultFlag)"
-        />
+        <van-cell title="患病时长" :value="getIllnessTimeText(item.illnessTime)" />
+        <van-cell title="就诊情况" :value="getConsultFlagText(item.consultFlag)" />
         <van-cell title="病情描述" :label="item.illnessDesc" />
       </van-cell-group>
     </div>
@@ -96,11 +86,7 @@ const show = ref(false)
         <van-cell title="应付款" :value="`￥${item.payment}`" />
         <van-cell title="优惠券" :value="`-￥${item.couponDeduction}`" />
         <van-cell title="积分抵扣" :value="`-￥${item.pointDeduction}`" />
-        <van-cell
-          title="实付款"
-          :value="`￥${item.actualPayment}`"
-          class="price"
-        />
+        <van-cell title="实付款" :value="`￥${item.actualPayment}`" class="price" />
       </van-cell-group>
     </div>
     <div class="detail-time" v-if="item.status === OrderType.ConsultPay">
@@ -108,85 +94,36 @@ const show = ref(false)
       <van-count-down :time="item.countdown * 1000" />
       内完成支付，超时订单将取消
     </div>
-    <div
-      class="detail-action van-hairline--top"
-      v-if="item.status === OrderType.ConsultPay"
-    >
+    <div class="detail-action van-hairline--top" v-if="item.status === OrderType.ConsultPay">
       <div class="price">
         <span>需付款</span>
         <span>￥{{ item.actualPayment.toFixed(2) }}</span>
       </div>
-      <van-button
-        type="default"
-        round
-        :loading="loading"
-        @click="cancelConsultOrder(item!)"
-        >取消问诊</van-button
-      >
-      <van-button type="primary" round @click="show = true">
-        继续支付
-      </van-button>
+      <van-button type="default" round :loading="loading" @click="cancelConsultOrder(item!)">取消问诊</van-button>
+      <van-button type="primary" round @click="show = true"> 继续支付 </van-button>
     </div>
-    <div
-      class="detail-action van-hairline--top"
-      v-if="item.status === OrderType.ConsultWait"
-    >
-      <van-button
-        type="default"
-        round
-        :loading="loading"
-        @click="cancelConsultOrder(item!)"
-        >取消问诊</van-button
-      >
-      <van-button type="primary" round :to="`/room?orderId=${item.id}`">
-        继续沟通
-      </van-button>
+    <div class="detail-action van-hairline--top" v-if="item.status === OrderType.ConsultWait">
+      <van-button type="default" round :loading="loading" @click="cancelConsultOrder(item!)">取消问诊</van-button>
+      <van-button type="primary" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
-    <div
-      class="detail-action van-hairline--top"
-      v-if="item.status === OrderType.ConsultChat"
-    >
-      <van-button
-        @click="onShowPrescription(item?.prescriptionId)"
-        v-if="item.prescriptionId"
-        type="default"
-        round
-      >
+    <div class="detail-action van-hairline--top" v-if="item.status === OrderType.ConsultChat">
+      <van-button @click="onShowPrescription(item?.prescriptionId)" v-if="item.prescriptionId" type="default" round>
         查看处方
       </van-button>
-      <van-button type="primary" round :to="`/room?orderId=${item.id}`">
-        继续沟通
-      </van-button>
+      <van-button type="primary" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
-    <div
-      class="detail-action van-hairline--top"
-      v-if="item.status === OrderType.ConsultComplete"
-    >
+    <div class="detail-action van-hairline--top" v-if="item.status === OrderType.ConsultComplete">
       <consult-more
         :disabled="!item.prescriptionId"
         @on-preview="onShowPrescription(item?.prescriptionId)"
         @on-delete="deleteConsultOrder(item!)"
       ></consult-more>
-      <van-button type="default" round :to="`/room?orderId=${item.id}`">
-        问诊记录
-      </van-button>
-      <van-button v-if="item.evaluateId" type="default" round>
-        查看评价
-      </van-button>
+      <van-button type="default" round :to="`/room?orderId=${item.id}`"> 问诊记录 </van-button>
+      <van-button v-if="item.evaluateId" type="default" round> 查看评价 </van-button>
       <van-button v-else type="primary" round> 写评价 </van-button>
     </div>
-    <div
-      class="detail-action van-hairline--top"
-      v-if="item.status === OrderType.ConsultCancel"
-    >
-      <van-button
-        type="default"
-        round
-        :loading="deleteLoading"
-        @click="deleteConsultOrder(item!)"
-      >
-        删除订单
-      </van-button>
+    <div class="detail-action van-hairline--top" v-if="item.status === OrderType.ConsultCancel">
+      <van-button type="default" round :loading="deleteLoading" @click="deleteConsultOrder(item!)"> 删除订单 </van-button>
       <van-button type="primary" round :to="`/`"> 咨询其他医生 </van-button>
     </div>
     <!-- 支付抽屉 -->
@@ -218,11 +155,7 @@ const show = ref(false)
     top: 0;
     width: 100%;
     height: 135px;
-    background: linear-gradient(
-      180deg,
-      rgba(44, 181, 165, 0),
-      rgba(44, 181, 165, 0.2)
-    );
+    background: linear-gradient(180deg, rgba(44, 181, 165, 0), rgba(44, 181, 165, 0.2));
     border-bottom-left-radius: 150px 20px;
     border-bottom-right-radius: 150px 20px;
   }
