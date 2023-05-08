@@ -11,7 +11,7 @@ onMounted(async () => {
   const res = await getAllDep()
   allDep.value = res.data
 })
-// 二级科室
+// 二级科室 切换一级科室 后 动态渲染二级
 const subDep = computed(() => allDep.value[active.value]?.child)
 
 const store = useConsultStore()
