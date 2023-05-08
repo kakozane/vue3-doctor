@@ -3,7 +3,7 @@ import { flagOptions, timeOptions } from '@/api/constants'
 import { uploadImage } from '@/api/consult'
 import { useConsultStore } from '@/stores'
 import type { ConsultIllness, Image } from '@/types/consult'
-import { showConfirmDialog, showToast } from 'vant'
+import { showConfirmDialog, showFailToast, showToast } from 'vant'
 import type { UploaderAfterRead, UploaderFileListItem } from 'vant/lib/uploader/types'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -41,17 +41,18 @@ const onAfterRead: UploaderAfterRead = (item) => {
 const onDeleteImg = (item: UploaderFileListItem) => {
   form.value.pictures = form.value.pictures?.filter((pic) => pic.url !== item.url)
 }
-
+//通过计算属性 判断按钮是否可用
 const disabled = computed(
   () => !form.value.illnessDesc || form.value.illnessTime === undefined || form.value.consultFlag === undefined
 )
 
 const store = useConsultStore()
 const router = useRouter()
+
 const next = () => {
-  if (!form.value.illnessDesc) return showToast('请输入病情描述')
-  if (form.value.illnessTime === undefined) return showToast('请选择症状的持续时间')
-  if (form.value.consultFlag === undefined) return showToast('请选择是否就诊过')
+  if (!form.value.illnessDesc) return showFailToast('请输入病情描述')
+  if (form.value.illnessTime === undefined) return showFailToast('请选择症状的持续时间')
+  if (form.value.consultFlag === undefined) return showFailToast('请选择是否就诊过')
   // 记录病情
   store.setIllness(form.value)
   // 跳转，携带标识
@@ -64,7 +65,8 @@ onMounted(() => {
     showConfirmDialog({
       title: '温馨提示',
       message: '是否恢复之前填写的病情信息？',
-      closeOnPopstate: false,
+      // 回退到当前页面
+      closeOnPopstate: false, // 是否在页面回退时自动关闭 默认为true
     }).then(() => {
       // 回显数据
       const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
