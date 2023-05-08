@@ -14,6 +14,7 @@ onMounted(async () => {
 // 二级科室 切换一级科室 后 动态渲染二级
 const subDep = computed(() => allDep.value[active.value]?.child)
 
+// 点击二级科室 保存科室ID
 const store = useConsultStore()
 </script>
 
