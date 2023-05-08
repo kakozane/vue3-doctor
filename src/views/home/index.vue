@@ -28,6 +28,7 @@ const active = ref(1)
           </router-link>
         </van-col>
         <van-col span="8">
+          <!-- Fast为2 枚举 -->
           <router-link to="/consult/fast" class="nav" @click="store.setType(ConsultType.Fast)">
             <cp-icon name="home-graphic"></cp-icon>
             <p class="title">极速问诊</p>

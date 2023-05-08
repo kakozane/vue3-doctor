@@ -47,10 +47,10 @@ export enum ConsultType {
 
 // 问诊时间
 export enum IllnessTime {
-  Week = 1,
-  Month,
-  HalfYear,
-  More,
+  Week = 1, // 一周内
+  Month, // 一个月内
+  HalfYear, // 半年内
+  More, // 半年以上
 }
 
 // 消息类型
