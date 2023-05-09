@@ -10,11 +10,13 @@ import router from '@/router'
 import Validator from 'id-validator'
 // 组件挂载完毕，获取数据
 const list = ref<PatientList>([])
+// 获取患者列表方法
 const loadList = async () => {
   const res = await getPatientList()
   list.value = res.data
-  // 默认选中患者
+  // 默认选中患者 如果支持选择患者同时满足档案中存在患者
   if (isChange.value && list.value.length) {
+    // 如果有 默认患者为选中  如果没有 患者第一个默认选中
     const defPatient = list.value.find((item) => item.defaultFlag === 1)
     if (defPatient) patientId.value = defPatient.id
     else patientId.value = list.value[0].id
@@ -117,16 +119,19 @@ const remove = async () => {
 
 // 是不是选择患者
 const route = useRoute()
+// true 表示支持   false表示不支持
 const isChange = computed(() => route.query.isChange === '1')
 // 选择效果
 const patientId = ref<string>()
 const selectedPatient = (item: Patient) => {
+  // 判断是否支持选中
   if (isChange.value) {
     patientId.value = item.id
   }
 }
 // 下一步
 const store = useConsultStore()
+// 记录患者ID跳转到待支付页面
 const next = () => {
   if (!patientId.value) return showToast('请选择患者')
   store.setPatient(patientId.value)
@@ -170,7 +175,7 @@ const next = () => {
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
     </div>
-    <!-- 底部按钮 -->
+    <!-- 底部按钮 患者选择下一步-->
     <div class="patient-next" @click="next" v-if="isChange">
       <van-button type="primary" round block>下一步</van-button>
     </div>
