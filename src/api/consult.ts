@@ -33,6 +33,7 @@ export const uploadImage = (file: File) => {
 export const getConsultOrderPre = (params: ConsultOrderPreParams) =>
   request<ConsultOrderPreData>('patient/consult/order/pre', 'GET', params)
 
+// 创建订单
 export const createConsultOrder = (data: PartialConsult) => request<{ id: string }>('patient/consult/order', 'POST', data)
 
 export const getConsultOrderPayUrl = (params: { paymentMethod: 0 | 1; orderId: string; payCallback: string }) =>

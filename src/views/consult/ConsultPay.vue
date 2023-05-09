@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { getConsultOrderPre } from '@/api/consult'
+import { createConsultOrder, getConsultOrderPre } from '@/api/consult'
 import { getPatientDetail } from '@/api/user'
 import { useConsultStore } from '@/stores'
-import type { ConsultOrderPreData } from '@/types/consult'
+import type { ConsultOrderPreData, PartialConsult } from '@/types/consult'
 import type { Patient } from '@/types/user'
+import { showConfirmDialog, showDialog, showToast } from 'vant'
 import { onMounted, ref } from 'vue'
-
-const store = useConsultStore()
-// 1. 查询预订单信息
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
+// 预支付信息
 const payInfo = ref<ConsultOrderPreData>()
+const store = useConsultStore()
 const loadData = async () => {
   const res = await getConsultOrderPre({
-    type: store.consult.type, // 问诊类型 极速问诊
-    illnessType: store.consult.illnessType, // 问诊级别 三甲或普通
+    type: store.consult.type,
+    illnessType: store.consult.illnessType,
   })
   payInfo.value = res.data
-  // 设置默认优惠券
-  store.setCoupon(payInfo.value.couponId)
+  // 记录优惠券ID
+  store.setCoupon(res.data.couponId)
 }
-// 2. 查询患者信息
+// 患者详情
 const patient = ref<Patient>()
 const loadPatient = async () => {
   if (!store.consult.patientId) return
@@ -26,18 +27,82 @@ const loadPatient = async () => {
   patient.value = res.data
 }
 
+type Key = keyof PartialConsult
 onMounted(() => {
+  // 生成订单需要的信息不完整的时候需要提示
+  const validKeys: Key[] = ['type', 'illnessType', 'depId', 'illnessDesc', 'illnessTime', 'consultFlag', 'patientId']
+  const valid = validKeys.every((key) => store.consult[key] !== undefined)
+  if (!valid) {
+    return showDialog({
+      title: '温馨提示',
+      message: '问诊信息不完整请重新填写，如有未支付的问诊订单可在问诊记录中继续支付！',
+      closeOnPopstate: false,
+    }).then(() => {
+      router.push('/home')
+    })
+  }
   loadData()
   loadPatient()
 })
 
+// 同意
 const agree = ref(false)
+
+// 生成订单
+// 展示弹层
+const show = ref(false)
+const loading = ref(false)
+// 订单ID
+const orderId = ref('')
+const submit = async () => {
+  if (!agree.value) return showToast('请勾选我同意支付协议')
+  loading.value = true
+  // 发送生成订单的请求 创建订单
+  const res = await createConsultOrder(store.consult)
+  loading.value = false
+  // 订单创建成功 需要清空之前记录在pinia的问诊数据 这样方便后面如果又创建订单
+  store.clear()
+  // 存储订单ID 获取支付地址 需要使用
+  orderId.value = res.data.id
+  show.value = true
+}
+// 提示1：取消支付将无法获得医生回复，医生接诊名额有限，是否确认关闭？
+// 提示2：问诊信息不完整请重新填写，如有未支付的问诊订单可在问诊记录中继续支付！
+// 用户引导
+onBeforeRouteLeave(() => {
+  // 阻止跳转 支付窗口打开后 订单创建成功后 不许跳页面了
+  if (orderId.value) return false
+})
+
+const router = useRouter()
+// 控制是否关闭支付窗口
+const onClose = () => {
+  return (
+    showConfirmDialog({
+      title: '温馨提示',
+      message: '取消支付将无法获得医生回复，医生接诊名额有限，是否确认关闭？',
+      cancelButtonText: '狠心离开',
+      confirmButtonText: '继续支付',
+    })
+      //   点击确定
+      .then(() => {
+        return false
+      })
+      // 点击仍要关闭 订单ID改为空 才能跳转
+      .catch(() => {
+        orderId.value = ''
+        router.push('/user/consult')
+        return true
+      })
+  )
+}
 </script>
+
 <template>
-  <div class="consult-pay-page" v-if="payInfo">
+  <div class="consult-pay-page" v-if="payInfo && patient">
     <cp-nav-bar title="支付" />
     <div class="pay-info">
-      <p class="tit">图文问诊 {{ payInfo?.payment }} 元</p>
+      <p class="tit">图文问诊 {{ payInfo.payment }} 元</p>
       <img class="img" src="@/assets/avatar-doctor.svg" />
       <p class="desc">
         <span>极速问诊</span>
@@ -51,15 +116,36 @@ const agree = ref(false)
     </van-cell-group>
     <div class="pay-space"></div>
     <van-cell-group>
-      <van-cell title="患者信息" :value="`${patient?.name} | ${patient?.genderValue} | ${patient?.age}岁`"></van-cell>
+      <van-cell title="患者信息" :value="`${patient.name} | ${patient.genderValue} | ${patient.age}岁`"></van-cell>
       <van-cell title="病情描述" :label="store.consult.illnessDesc"></van-cell>
     </van-cell-group>
     <div class="pay-schema">
-      <van-checkbox v-model="agree">我已同意 <span class="text">支付协议</span></van-checkbox>
+      <van-checkbox v-model="agree"> 我已同意 <span class="text">支付协议</span> </van-checkbox>
     </div>
-    <van-submit-bar button-type="primary" :price="payInfo.actualPayment * 100" button-text="立即支付" text-align="left" />
+    <van-submit-bar
+      button-type="primary"
+      :price="payInfo.actualPayment * 100"
+      button-text="立即支付"
+      text-align="left"
+      @click="submit"
+      :loading="loading"
+    />
+    <!-- 支付抽屉，控制面板 -->
+    <cp-pay-sheet
+      v-model:show="show"
+      :order-id="orderId"
+      :actual-payment="payInfo.actualPayment"
+      :on-close="onClose"
+      pay-callback="/room"
+    ></cp-pay-sheet>
+  </div>
+  <div class="consult-pay-page" v-else>
+    <cp-nav-bar title="支付" />
+    <!-- 骨架组件 -->
+    <van-skeleton title :row="10" style="margin-top: 18px" />
   </div>
 </template>
+
 <style lang="scss" scoped>
 .consult-pay-page {
   padding: 46px 0 50px 0;
