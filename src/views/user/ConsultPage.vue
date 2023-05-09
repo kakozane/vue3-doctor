@@ -2,7 +2,6 @@
 import { ConsultType } from '@/enums'
 import ConsultList from './components/ConsultList.vue'
 </script>
-
 <template>
   <div class="consult-page">
     <cp-nav-bar title="问诊记录" />
@@ -19,7 +18,6 @@ import ConsultList from './components/ConsultList.vue'
     </van-tabs>
   </div>
 </template>
-
 <style lang="scss" scoped>
 .consult-page {
   padding-top: 46px;

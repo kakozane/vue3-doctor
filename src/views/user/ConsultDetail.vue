@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { OrderType } from '@/enums'
-import { getConsultOrderDetail } from '@/services/consult'
+import { getConsultOrderDetail } from '@/api/consult'
 import type { ConsultOrderItem } from '@/types/consult'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -9,7 +9,6 @@ import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
 import { useCancelOrder, useDeleteOrder, useShowPrescription } from '@/hooks'
 import { useClipboard } from '@vueuse/core'
 import { showToast } from 'vant'
-
 const route = useRoute()
 const item = ref<ConsultOrderItem>()
 onMounted(async () => {

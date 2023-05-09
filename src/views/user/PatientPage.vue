@@ -116,7 +116,6 @@ const remove = async () => {
     showSuccessToast('删除成功')
   }
 }
-
 // 是不是选择患者
 const route = useRoute()
 // true 表示支持   false表示不支持
