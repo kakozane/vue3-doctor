@@ -20,17 +20,20 @@ const form = ref<ConsultIllness>({
 const fileList = ref<Image[]>([])
 // 图片上传
 const onAfterRead: UploaderAfterRead = (item) => {
+  // 排除多图上传数组的情况
   if (Array.isArray(item)) return
+  // 非空判断
   if (!item.file) return
-
+  // 开始上传
   item.status = 'uploading'
   item.message = '上传中...'
   uploadImage(item.file)
     .then((res) => {
       item.status = 'done'
       item.message = undefined
+      // 给item加上url是为了删除可以根据url进行删除
       item.url = res.data.url
-      // 同步数据
+      // 同步数据 存储上传成功图片url
       form.value.pictures?.push(res.data)
     })
     .catch(() => {
