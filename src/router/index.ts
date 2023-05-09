@@ -43,11 +43,12 @@ const router = createRouter({
       component: () => import('@/views/consult/ConsultIllness.vue'),
       meta: { title: '病情描述' },
     },
-    // {
-    //   path: '/consult/pay',
-    //   component: () => import('@/views/Consult/ConsultPay.vue'),
-    //   meta: { title: '问诊支付' },
-    // },
+    // 支付页面
+    {
+      path: '/consult/pay',
+      component: () => import('@/views/consult/ConsultPay.vue'),
+      meta: { title: '问诊支付' },
+    },
     // {
     //   path: '/room',
     //   component: () => import('@/views/Room/index.vue'),
