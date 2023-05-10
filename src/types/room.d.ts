@@ -50,7 +50,7 @@ export type EvaluateDoc = {
   /** 评价ID */
   id?: string
   /** 评分 */
-  score?: number
+  score: number
   /** 内容 */
   content?: string
   /** 创建时间 */
