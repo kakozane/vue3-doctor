@@ -36,6 +36,13 @@ const store = useUserStore()
 const route = useRoute()
 const list = ref<Message[]>([])
 const initialMsg = ref(true)
+//初始化创建ws长连接 （打电话）
+// 通过io函数传入后台ws连接地址和相关参数
+// 连接成功后的相关事件
+// 通过io实例的connect 监听连接是否成功
+// 通过error事件 监听连接错误
+// 通过disconnect 监听连接断开
+// 存储socket实例
 let socket: Socket
 onMounted(() => {
   loadConsult()
