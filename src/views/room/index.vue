@@ -34,9 +34,10 @@ provide('completeEva', completeEva)
 
 const store = useUserStore()
 const route = useRoute()
+// 消息内容
 const list = ref<Message[]>([])
 const initialMsg = ref(true)
-//初始化创建ws长连接 （打电话）
+// 初始化创建ws长连接 （打电话）
 // 通过io函数传入后台ws连接地址和相关参数
 // 连接成功后的相关事件
 // 通过io实例的connect 监听连接是否成功
@@ -65,22 +66,26 @@ onMounted(() => {
   })
 
   // 获取聊天记录，如果是第一次（默认消息）
+  // {data}：{data添加类型}
   socket.on('chatMsgList', ({ data }: { data: TimeMessages[] }) => {
     // data 数据 ===> [ {createTime}, ...items ]
     const arr: Message[] = []
     data.forEach((item, i) => {
       // 记录每一段消息中最早的消息时间，获取聊天记录需要使用
       if (i === 0) time.value = item.createTime
+      // 发送消息的时间放入到result中
       arr.push({
-        msgType: MsgType.Notify,
+        msgType: MsgType.Notify, // 决定使用哪个消息卡片去渲染
         msg: {
           content: item.createTime,
         },
         createTime: item.createTime,
         id: item.createTime,
       })
+      // 把items的消息放入到results中
       arr.push(...item.items)
     })
+    // 上面两步之后把处理好的消息列表追加到list中
     list.value.unshift(...arr)
 
     loading.value = false

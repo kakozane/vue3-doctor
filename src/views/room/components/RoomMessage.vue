@@ -41,6 +41,8 @@ const buy = (pre?: Prescription) => {
 
 <template>
   <!-- 患者卡片 -->
+  <!-- item的消息显示需要根据当前消息类型 匹配对应的消息卡片进行渲染 -->
+  <!-- 病情描述 -->
   <div class="msg msg-illness" v-if="item.msgType === MsgType.CardPat">
     <div class="patient van-hairline--bottom">
       <p>
