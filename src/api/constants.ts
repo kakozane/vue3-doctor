@@ -1,5 +1,6 @@
 import { IllnessTime } from '@/enums'
 
+// 一些常量数据
 // 选项数据
 export const timeOptions = [
   { label: '一周内', value: IllnessTime.Week },

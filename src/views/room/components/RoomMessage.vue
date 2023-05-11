@@ -22,6 +22,7 @@ const onPreviewImage = (images?: Image[]) => {
 
 const store = useUserStore()
 
+// 格式化时间
 const formatTime = (time: string) => dayjs(time).format('HH:mm')
 
 // 查看处方
@@ -51,7 +52,9 @@ const buy = (pre?: Prescription) => {
         {{ item.msg.consultRecord?.patientInfo.age }}岁
       </p>
       <p v-if="item.msg.consultRecord">
+        <!-- 患病时间 -->
         {{ getIllnessTimeText(item.msg.consultRecord?.illnessTime) }} |
+        <!-- 是否就诊过 -->
         {{ getConsultFlagText(item.msg.consultRecord?.consultFlag) }}
       </p>
     </div>
