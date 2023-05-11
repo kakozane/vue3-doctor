@@ -40,6 +40,7 @@ export const createConsultOrder = (data: PartialConsult) => request<{ id: string
 export const getConsultOrderPayUrl = (params: { paymentMethod: 0 | 1; orderId: string; payCallback: string }) =>
   request<{ payUrl: string }>('patient/consult/pay', 'POST', params)
 
+// 获取订单详情
 export const getConsultOrderDetail = (orderId: string) =>
   request<ConsultOrderItem>('patient/consult/order/detail', 'GET', { orderId })
 

@@ -16,6 +16,7 @@ import dayjs from 'dayjs'
 import { showToast } from 'vant'
 
 const consult = ref<ConsultOrderItem>()
+// 获取订单详情信息
 const loadConsult = async () => {
   const res = await getConsultOrderDetail(route.query.orderId as string)
   consult.value = res.data
@@ -116,10 +117,12 @@ onUnmounted(() => {
 
 // 发送文字信息
 const onSendText = (text: string) => {
+  //使用socket.emit把文字发送给ws服务器 再下发聊天内容发给医生
+  // 和后端约定的事件sendChatMsg
   socket.emit('sendChatMsg', {
-    from: store.user?.id,
-    to: consult.value?.docInfo?.id,
-    msgType: MsgType.MsgText,
+    from: store.user?.id, // 用户ID 登录人
+    to: consult.value?.docInfo?.id, //接诊医生ID
+    msgType: MsgType.MsgText, //消息类型 文字消息
     msg: {
       content: text,
     },

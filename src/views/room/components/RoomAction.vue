@@ -9,12 +9,13 @@ defineProps<{
   disabled: boolean
 }>()
 
+// 发送文字消息
+const text = ref('')
 const emit = defineEmits<{
   (e: 'send-text', text: string): void
   (e: 'send-image', image: Image): void
 }>()
-
-const text = ref('')
+// 发送给父组件 父组件使用socket.emit把文字发送给ws服务器 再下发聊天内容发给医生
 const sendText = () => {
   emit('send-text', text.value)
   text.value = ''
@@ -33,6 +34,7 @@ const sendImage: UploaderAfterRead = async (item) => {
 
 <template>
   <div class="room-action">
+    <!-- 输入框 发送文字消息 -->
     <van-field
       type="text"
       class="input"
@@ -43,6 +45,7 @@ const sendImage: UploaderAfterRead = async (item) => {
       v-model="text"
       @keyup.enter="sendText"
     ></van-field>
+    <!-- 上传图片 发送图片消息 -->
     <van-uploader :after-read="sendImage" :preview-image="false" :disabled="disabled">
       <cp-icon name="consult-img" />
     </van-uploader>

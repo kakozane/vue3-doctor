@@ -13,7 +13,7 @@ const active = ref(1)
     <!-- 头部 -->
     <div class="home-header">
       <div class="con">
-        <h1>优医</h1>
+        <h1>hymnken问诊</h1>
         <div class="search"><cp-icon name="home-search" /> 搜一搜：疾病/症状/医生/健康知识</div>
       </div>
     </div>

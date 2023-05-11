@@ -6,7 +6,7 @@ import '@/styles/main.scss'
 // vant需要单独引入的样式
 import 'vant/es/toast/style'
 import 'vant/es/dialog/style'
-// 注册
+// 注册SVG图标
 import 'virtual:svg-icons-register'
 const app = createApp(App)
 app.use(pinia)

@@ -14,8 +14,9 @@ defineProps<{
   item: Message
 }>()
 
-// 预览图片
+// 预览患者病情描述图片 数组
 const onPreviewImage = (images?: Image[]) => {
+  // map返回新数组
   if (images && images.length) showImagePreview(images.map((item) => item.url))
   else showToast('暂无图片')
 }
