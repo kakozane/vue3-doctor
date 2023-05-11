@@ -21,8 +21,14 @@ const sendText = () => {
   text.value = ''
 }
 
-// 提交图片
+// 提交图片 发送图片消息
 const sendImage: UploaderAfterRead = async (item) => {
+  /**
+  点击后 调用上传api函数 上传选择的图片
+  上传成功后获取的url 通过子传父传递图片
+  父组件获取到图片 使用socket.emit发送图片给医生
+  */
+  //  排除数组情况
   if (Array.isArray(item)) return
   if (!item.file) return
   const t = showLoadingToast({ message: '正在上传', duration: 0 })

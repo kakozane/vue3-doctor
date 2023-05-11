@@ -23,9 +23,13 @@ const onPreviewImage = (images?: Image[]) => {
 
 const store = useUserStore()
 
-// 格式化时间
+// 格式化时间为 时 分
 const formatTime = (time: string) => dayjs(time).format('HH:mm')
 
+// 解决发送 接收 图片消息后 不滚动到最底部 因为图片还得去服务器下载 没等到渲染完就执行scollTo
+const loadSuccess = () => {
+  window.scrollTo(0, document.body.scrollHeight)
+}
 // 查看处方
 const { onShowPrescription } = useShowPrescription()
 
@@ -97,7 +101,7 @@ const buy = (pre?: Prescription) => {
   <div class="msg msg-to" v-if="item.msgType === MsgType.MsgImage && item.from === store.user?.id">
     <div class="content">
       <div class="time">{{ formatTime(item.createTime) }}</div>
-      <van-image fit="contain" :src="item.msg.picture?.url" />
+      <van-image @load="loadSuccess()" fit="contain" :src="item.msg.picture?.url" />
     </div>
     <van-image :src="item.fromAvatar" />
   </div>
@@ -114,7 +118,7 @@ const buy = (pre?: Prescription) => {
     <van-image :src="item.fromAvatar" />
     <div class="content">
       <div class="time">{{ formatTime(item.createTime) }}</div>
-      <van-image fit="contain" :src="item.msg.picture?.url" />
+      <van-image @load="loadSuccess()" fit="contain" :src="item.msg.picture?.url" />
     </div>
   </div>
   <!-- 处方卡片 -->
