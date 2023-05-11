@@ -55,6 +55,7 @@ export const evaluateConsultOrder = (data: {
   anonymousFlag: 0 | 1
 }) => request('patient/order/evaluate', 'POST', data)
 
+// 获取问诊订单记录列表
 export const getConsultOrderList = (params: ConsultOrderListParams) =>
   request<ConsultOrderPage>('patient/consult/order/list', 'GET', params)
 

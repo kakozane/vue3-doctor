@@ -162,7 +162,7 @@ export type ConsultOrderPreData = {
   actualPayment: number
 }
 
-// 问诊订单单项信息
+// 问诊记录订单单项信息
 export type ConsultOrderItem = Consult & {
   /** 创建时间 */
   createTime: string
@@ -194,10 +194,14 @@ export type ConsultOrderItem = Consult & {
   actualPayment: number
 }
 
+// 问诊记录订单列表
+// 根据通用分页类型定义
+// api参数类型
 export type ConsultOrderListParams = PageParams & {
   type: ConsultType
 }
 
+//api返回data类型
 export type ConsultOrderPage = {
   total: number
   pageTotal: number
