@@ -30,18 +30,21 @@ const formatTime = (time: string) => dayjs(time).format('HH:mm')
 const loadSuccess = () => {
   window.scrollTo(0, document.body.scrollHeight)
 }
-// 查看处方
+// 查看处方方法
 const { onShowPrescription } = useShowPrescription()
 
 // 跳转支付
 const router = useRouter()
+// 点击购买处方中的药品
 const buy = (pre?: Prescription) => {
   if (!pre) return
+  // 处方失效
   if (pre.status === PrescriptionStatus.Invalid) return showToast('失效订单')
+  //  未付款 没有支付
   if (pre.status === PrescriptionStatus.NotPayment && !pre.orderId) {
-    return router.push(`/order/pay?id=${pre.id}`)
+    return router.push(`/medicine/pay?id=${pre.id}`)
   }
-  router.push(`/order/${pre.orderId}`)
+  router.push(`/medicine/${pre.orderId}`)
 }
 </script>
 
@@ -121,12 +124,13 @@ const buy = (pre?: Prescription) => {
       <van-image @load="loadSuccess()" fit="contain" :src="item.msg.picture?.url" />
     </div>
   </div>
-  <!-- 处方卡片 -->
+  <!-- 处方消息卡片 -->
   <div class="msg msg-recipe" v-if="item.msgType === MsgType.CardPre">
     <div class="content" v-if="item.msg.prescription">
       <div class="head van-hairline--bottom">
         <div class="head-tit">
           <h3>电子处方</h3>
+          <!-- 点击查看处方 -->
           <p @click="onShowPrescription(item.msg.prescription?.id)">原始处方 <van-icon name="arrow"></van-icon></p>
         </div>
         <p>
@@ -151,7 +155,13 @@ const buy = (pre?: Prescription) => {
       </div>
     </div>
   </div>
-  <!-- 评价卡片，后期实现 -->
+  <!-- 9. 订单取消/关闭诊室 -->
+  <div class="msg msg-tip msg-tip-cancel" v-if="item.msgType === MsgType.NotifyCancel">
+    <div class="content">
+      <span>{{ item.msg.content }}</span>
+    </div>
+  </div>
+  <!-- 评价医生的卡片 -->
   <div class="msg msg-comment" v-if="item.msgType === MsgType.CardEva || item.msgType === MsgType.CardEvaForm">
     <evaluate-card :evaluateDoc="item.msg.evaluateDoc"></evaluate-card>
   </div>

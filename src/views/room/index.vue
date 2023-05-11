@@ -22,12 +22,17 @@ const loadConsult = async () => {
   consult.value = res.data
 }
 
-// 提供问诊订单数据给后代组件
+// 提供问诊订单数据给后代组件 这里consult不要加.value 不然传不过去 .value是访问变量
+// 异步数据一定要注入响应式的
 provide('consult', consult)
+// 评价成功 修改评价消息状态和数据 切换卡片展示
 const completeEva = (score: number) => {
+  // 获取评价信息数据
   const item = list.value.find((item) => item.msgType === MsgType.CardEvaForm)
   if (item) {
+    // 更新分数
     item.msg.evaluateDoc = { score }
+    // 更新类型为已评价
     item.msgType = MsgType.CardEva
   }
 }

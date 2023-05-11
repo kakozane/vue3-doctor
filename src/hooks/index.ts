@@ -33,8 +33,10 @@ export const useFollow = (type: FollowType = 'doc') => {
 // 提供查看处方
 export const useShowPrescription = () => {
   const onShowPrescription = async (id?: string) => {
+    // 排除undefined
     if (id) {
       const res = await getPrescriptionPic(id)
+      // vant中实现图片预览组件
       showImagePreview([res.data.url])
     }
   }

@@ -11,8 +11,9 @@ defineProps<{
   evaluateDoc?: EvaluateDoc
 }>()
 
-// 注入问诊订单
+// 注入问诊订单 要设置响应式
 const consult = inject<Ref<ConsultOrderItem>>('consult')
+// 接受爷爷组件注入订单详情数据和更新msg方法
 const completeEva = inject<(score: number) => void>('completeEva')
 
 // 收集数据
@@ -20,6 +21,7 @@ const score = ref(0)
 const content = ref('')
 const anonymousFlag = ref(false)
 const disabled = computed(() => !score.value || !content.value)
+
 const onSubmit = async () => {
   if (!score.value) return showToast('请选择评分')
   if (!content.value) return showToast('请填写评价')
@@ -27,21 +29,26 @@ const onSubmit = async () => {
   // 提交评价信息
   if (consult?.value.docInfo) {
     await evaluateConsultOrder({
-      docId: consult?.value.docInfo?.id,
-      orderId: consult?.value.id,
+      // 爷爷组件注入的响应数据
+      docId: consult?.value.docInfo?.id, // 医生ID
+      orderId: consult?.value.id, //订单ID
+      // 表单评价数据
       score: score.value,
       content: content.value,
-      anonymousFlag: anonymousFlag.value ? 1 : 0,
+      anonymousFlag: anonymousFlag.value ? 1 : 0, //是否匿名评价
     })
+    // 修改消息 评价请求成功 改成已评价
     completeEva && completeEva(score.value)
   }
 }
 </script>
 
 <template>
+  <!-- 已经评价过 -->
   <div class="evaluate-card" v-if="evaluateDoc">
     <p class="title">医生服务评价</p>
     <p class="desc">我们会更加努力提升服务质量</p>
+    <!-- 评分 -->
     <van-rate
       :modelValue="evaluateDoc.score"
       size="7vw"
@@ -51,10 +58,12 @@ const onSubmit = async () => {
       void-color="rgba(0,0,0,0.04)"
     />
   </div>
+  <!-- 还没有评价 -->
   <div class="evaluate-card" v-else>
     <p class="title">感谢您的评价</p>
     <p class="desc">本次在线问诊服务您还满意吗？</p>
     <van-rate size="7vw" gutter="3vw" color="#FADB14" void-icon="star" void-color="rgba(0,0,0,0.04)" v-model="score" />
+    <!-- 输入框 -->
     <van-field
       type="textarea"
       maxlength="150"
