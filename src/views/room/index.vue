@@ -101,13 +101,17 @@ onMounted(() => {
       })
     }
   })
-  // 监听订单状态变化
+  // 监听订单状态变化  接受订单变化的消息 更新下
   socket.on('statusChange', () => loadConsult())
-  // 接收聊天消息
+  // 接收医生回复的消息
   socket.on('receiveChatMsg', async (event) => {
     socket.emit('updateMsgStatus', event.id)
     list.value.push(event)
     await nextTick()
+    // list消息列表更新后 直接滚动会失效
+    // 改完数据之后dom的更新是异步的 数据变了 但dom没改
+    // 列表更新后 在滚动 使用nextTick()解决 异步更新后 在执行window.scrollTo这个同步
+    // 每次收到消息后 滚动到聊天列表最底部
     window.scrollTo(0, document.body.scrollHeight)
   })
 })
@@ -143,6 +147,7 @@ const onSendImage = (image: Image) => {
 
 // 下拉刷新
 const loading = ref(false)
+// 格式化时间
 const time = ref(dayjs().format('YYYY-MM-DD HH:mm:ss'))
 const onRefresh = () => {
   socket.emit('getChatMsgList', 20, time.value, consult.value?.id)

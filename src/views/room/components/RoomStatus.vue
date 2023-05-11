@@ -8,11 +8,14 @@ defineProps<{
 
 <template>
   <div class="room-status">
+    <!-- 等待接单中 -->
     <div v-if="status === OrderType.ConsultWait" class="wait">已通知医生尽快接诊,24小时内医生未回复将自动退款</div>
+    <!-- 与医生咨询中 -->
     <div v-if="status === OrderType.ConsultChat" class="chat">
       <span>咨询中</span>
       <span> 剩余时间：<van-count-down v-if="countdown" :time="countdown * 1000" /> </span>
     </div>
+    <!-- 问诊结束 -->
     <div v-if="status === OrderType.ConsultComplete || status === OrderType.ConsultCancel" class="end">
       <van-icon name="passed" /> 已结束
     </div>

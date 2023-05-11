@@ -85,7 +85,7 @@ const buy = (pre?: Prescription) => {
       <span>{{ item.msg.content }}</span>
     </div>
   </div>
-  <!-- 发送文字 -->
+  <!-- 发送文字的消息 -->
   <div class="msg msg-to" v-if="item.msgType === MsgType.MsgText && item.from === store.user?.id">
     <div class="content">
       <div class="time">{{ formatTime(item.createTime) }}</div>
@@ -93,7 +93,7 @@ const buy = (pre?: Prescription) => {
     </div>
     <van-image :src="item.fromAvatar" />
   </div>
-  <!-- 发送图片 -->
+  <!-- 发送图片的消息 -->
   <div class="msg msg-to" v-if="item.msgType === MsgType.MsgImage && item.from === store.user?.id">
     <div class="content">
       <div class="time">{{ formatTime(item.createTime) }}</div>
@@ -101,7 +101,7 @@ const buy = (pre?: Prescription) => {
     </div>
     <van-image :src="item.fromAvatar" />
   </div>
-  <!-- 接收文字 -->
+  <!-- 医生发送的文字 -->
   <div class="msg msg-from" v-if="item.msgType === MsgType.MsgText && item.from !== store.user?.id">
     <van-image :src="item.fromAvatar" />
     <div class="content">
@@ -109,7 +109,7 @@ const buy = (pre?: Prescription) => {
       <div class="pao">{{ item.msg.content }}</div>
     </div>
   </div>
-  <!-- 接收图片 -->
+  <!-- 医生发送的图片 -->
   <div class="msg msg-from" v-if="item.msgType === MsgType.MsgImage && item.from !== store.user?.id">
     <van-image :src="item.fromAvatar" />
     <div class="content">

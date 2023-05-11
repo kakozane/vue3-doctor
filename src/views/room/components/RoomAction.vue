@@ -4,7 +4,7 @@ import type { Image } from '@/types/consult'
 import { showLoadingToast } from 'vant'
 import type { UploaderAfterRead } from 'vant/lib/uploader/types'
 import { ref } from 'vue'
-// 聊天框
+// 聊天框是否禁用 医生没接单时要禁用聊天框
 defineProps<{
   disabled: boolean
 }>()
