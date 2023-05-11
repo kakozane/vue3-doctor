@@ -3,7 +3,7 @@ import type { ConsultType } from '@/enums'
 import ConsultItem from './ConsultItem.vue'
 import { ref } from 'vue'
 import type { ConsultOrderItem, ConsultOrderListParams } from '@/types/consult'
-import { getConsultOrderList } from '@/services/consult'
+import { getConsultOrderList } from '@/api/consult'
 
 const props = defineProps<{
   type: ConsultType
@@ -11,7 +11,7 @@ const props = defineProps<{
 const params = ref<ConsultOrderListParams>({
   type: props.type,
   current: 1,
-  pageSize: 5
+  pageSize: 5,
 })
 
 // 加载更多
@@ -39,18 +39,9 @@ const onDelete = (id: string) => {
 
 <template>
   <div class="consult-list">
-    <van-list
-      v-model:loading="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
-      <consult-item
-        @on-delete="onDelete"
-        v-for="item in list"
-        :key="item.id"
-        :item="item"
-      />
+    <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <!-- 循环渲染问诊订单数据 -->
+      <consult-item @on-delete="onDelete" v-for="item in list" :key="item.id" :item="item" />
     </van-list>
   </div>
 </template>

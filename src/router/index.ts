@@ -49,6 +49,7 @@ const router = createRouter({
       component: () => import('@/views/consult/ConsultPay.vue'),
       meta: { title: '问诊支付' },
     },
+    // 问诊室
     {
       path: '/room',
       component: () => import('@/views/room/index.vue'),
@@ -57,12 +58,11 @@ const router = createRouter({
         if (to.query.payResult === 'false') return '/user/consult'
       },
     },
-    // },
-    // {
-    //   path: '/user/consult',
-    //   component: () => import('@/views/user/ConsultPage.vue'),
-    //   meta: { title: '问诊记录' },
-    // },
+    {
+      path: '/user/consult',
+      component: () => import('@/views/user/ConsultOrder.vue'),
+      meta: { title: '问诊记录' },
+    },
     // {
     //   path: '/user/consult/:id',
     //   component: () => import('@/views/user/ConsultDetail.vue'),
@@ -93,7 +93,9 @@ const router = createRouter({
     //   component: () => import('@/views/Login/LoginCallback.vue'),
     //   meta: { title: '三方登录' },
     // },
+    // tabBar页面
     {
+      // 父路由 layout公共布局页面
       path: '/',
       redirect: '/home',
       component: () => import('@/views/layout/index.vue'),
