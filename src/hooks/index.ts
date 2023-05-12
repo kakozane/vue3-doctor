@@ -82,6 +82,7 @@ export const useDeleteOrder = (cb: () => void) => {
   return { loading, deleteConsultOrder }
 }
 
+// 获取药品订单详情
 export const useOrderDetail = (id: string) => {
   const order = ref<OrderDetail>()
   const loading = ref(false)

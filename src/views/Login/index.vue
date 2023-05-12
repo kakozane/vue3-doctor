@@ -10,7 +10,7 @@ import { useSendCode } from './components/index'
 const agree = ref(false)
 const clickRight = () => {}
 // 手机号和密码 的响应变量
-const mobile = ref('13230000007')
+const mobile = ref('13230000088')
 const password = ref('abc12345')
 
 // 是否显示密码
