@@ -29,7 +29,7 @@ const { loading, cancelConsultOrder } = useCancelOrder()
 const emit = defineEmits<{
   (e: 'on-delete', id: string): void
 }>()
-// 删除订单
+// 删除订单 需要子传父 通知刷新整个列表
 const { loading: deleteLoading, deleteConsultOrder } = useDeleteOrder(() => {
   emit('on-delete', props.item.id)
 })
@@ -52,6 +52,7 @@ const { onShowPrescription } = useShowPrescription()
         {{ item.statusValue }}
       </span>
     </div>
+    <!-- 患者信息 -->
     <div class="body" @click="$router.push(`/user/consult/${item.id}`)">
       <div class="body-row">
         <div class="body-label">病情描述</div>
@@ -66,14 +67,17 @@ const { onShowPrescription } = useShowPrescription()
         <div class="body-value tip">{{ item.createTime }}</div>
       </div>
     </div>
+    <!-- 待支付 取消问诊+去支付 -->
     <div class="foot" v-if="item.status === OrderType.ConsultPay">
       <van-button :loading="loading" @click="cancelConsultOrder(item)" class="gray" plain size="small" round>取消问诊</van-button>
       <van-button type="primary" plain size="small" round :to="`/user/consult/${item.id}`"> 去支付 </van-button>
     </div>
+    <!-- 待接诊 取消问诊+继续沟通 -->
     <div class="foot" v-if="item.status === OrderType.ConsultWait">
       <van-button :loading="loading" @click="cancelConsultOrder(item)" class="gray" plain size="small" round>取消问诊</van-button>
       <van-button type="primary" plain size="small" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
+    <!-- 咨询中 查看处方（如果开了）+继续沟通 -->
     <div class="foot" v-if="item.status === OrderType.ConsultChat">
       <van-button
         v-if="item.prescriptionId"
@@ -87,8 +91,9 @@ const { onShowPrescription } = useShowPrescription()
       </van-button>
       <van-button type="primary" plain size="small" round :to="`/room?orderId=${item.id}`"> 继续沟通 </van-button>
     </div>
+    <!-- 已完成 更多（查看处方，如果开了，删除订单）+问诊记录+（未评价？ 写评价 ：查看评价） -->
     <div class="foot" v-if="item.status === OrderType.ConsultComplete">
-      <!-- 更多组件 -->
+      <!-- 更多组件 下拉菜单 -->
       <consult-more
         :disabled="!item.prescriptionId"
         @on-preview="onShowPrescription(item.prescriptionId)"
@@ -98,6 +103,7 @@ const { onShowPrescription } = useShowPrescription()
       <van-button v-if="item.evaluateId" class="gray" plain size="small" round> 查看评价 </van-button>
       <van-button v-else type="primary" plain size="small" round> 写评价 </van-button>
     </div>
+    <!-- 已取消 -->
     <div class="foot" v-if="item.status === OrderType.ConsultCancel">
       <van-button :loading="deleteLoading" @click="deleteConsultOrder(item)" class="gray" plain size="small" round>
         删除订单

@@ -7,6 +7,7 @@ import ConsultList from './components/ConsultList.vue'
     <!-- 导航栏 -->
     <cp-nav-bar title="问诊记录" />
     <!-- 页签组件 -->
+    <!-- sticky 吸顶 -->
     <van-tabs sticky>
       <van-tab title="找医生">
         <consult-list :type="ConsultType.Doctor" />

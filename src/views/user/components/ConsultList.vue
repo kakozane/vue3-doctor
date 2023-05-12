@@ -6,26 +6,35 @@ import type { ConsultOrderItem, ConsultOrderListParams } from '@/types/consult'
 import { getConsultOrderList } from '@/api/consult'
 
 const props = defineProps<{
+  // 类型
   type: ConsultType
 }>()
 const params = ref<ConsultOrderListParams>({
   type: props.type,
-  current: 1,
-  pageSize: 5,
+  current: 1, //当前请求第几页 默认第一页
+  pageSize: 5, // 每页多少条数据
 })
 
-// 加载更多
+// 获取订单列表实现上拉加载更多
+// 列表加载状态:true 显示加载中loading|false关闭loading
 const loading = ref(false)
+// 是否加载完成
 const finished = ref(false)
+// 列表数据 空数组
 const list = ref<ConsultOrderItem[]>([])
+// 加载方法  默认会执行一次
 const onLoad = async () => {
+  // 异步更新数据
   const res = await getConsultOrderList(params.value)
+  // 追加当前页数据到列表
   list.value.push(...res.data.rows)
   if (params.value.current < res.data.pageTotal) {
     params.value.current++
   } else {
+    // 数据加载完成
     finished.value = true
   }
+  // 加载状态结束
   loading.value = false
 }
 

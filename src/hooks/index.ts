@@ -30,7 +30,7 @@ export const useFollow = (type: FollowType = 'doc') => {
   return { loading, follow }
 }
 
-// 提供查看处方
+// 提供查看处方hooks
 export const useShowPrescription = () => {
   const onShowPrescription = async (id?: string) => {
     // 排除undefined
@@ -43,13 +43,15 @@ export const useShowPrescription = () => {
   return { onShowPrescription }
 }
 
-// 取消订单
+// 取消订单  待支付 待接诊
 export const useCancelOrder = () => {
   const loading = ref(false)
   const cancelConsultOrder = async (item: ConsultOrderItem) => {
     try {
       loading.value = true
+      // 后台数据库取消
       await cancelOrder(item.id)
+      // 局部刷新下 当前订单的状态 不需要重新刷新列表 局部刷新即可
       item.status = OrderType.ConsultCancel
       item.statusValue = '已取消'
       showSuccessToast('取消成功')
@@ -62,7 +64,7 @@ export const useCancelOrder = () => {
   return { loading, cancelConsultOrder }
 }
 
-// 删除订单
+// 删除订单  已完成 已取消
 export const useDeleteOrder = (cb: () => void) => {
   const loading = ref(false)
   const deleteConsultOrder = async (item: ConsultOrderItem) => {

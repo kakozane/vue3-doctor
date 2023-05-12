@@ -7,8 +7,8 @@ const props = defineProps<{
 
 const showPopover = ref(false)
 const actions = computed(() => [
-  { text: '查看处方', disabled: props.disabled },
-  { text: '删除订单' }
+  { text: '查看处方', disabled: props.disabled }, //没有开处方 不能查看 会禁用按钮
+  { text: '删除订单' },
 ])
 
 const emit = defineEmits<{
@@ -24,12 +24,7 @@ const onSelect = (action: { text: string }, i: number) => {
 
 <template>
   <div class="consult-more">
-    <van-popover
-      v-model:show="showPopover"
-      placement="top-start"
-      :actions="actions"
-      @select="onSelect"
-    >
+    <van-popover v-model:show="showPopover" placement="top-start" :actions="actions" @select="onSelect">
       <template #reference> 更多 </template>
     </van-popover>
   </div>
