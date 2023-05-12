@@ -36,6 +36,7 @@ const pay = async () => {
 </script>
 
 <template>
+  <!-- 这里需要emit修改show 因为show是父组件定义的 这里不能直接修改 不然违背了单项数据流 -->
   <van-action-sheet
     :show="show"
     @update:show="emit('update:show', $event)"

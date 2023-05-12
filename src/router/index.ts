@@ -68,11 +68,11 @@ const router = createRouter({
       component: () => import('@/views/user/ConsultDetail.vue'),
       meta: { title: '问诊详情' },
     },
-    // {
-    //   path: '/order/pay',
-    //   component: () => import('@/views/Order/OrderPay.vue'),
-    //   meta: { title: '药品支付' },
-    // },
+    {
+      path: '/medicine/pay',
+      component: () => import('@/views/medicine/OrderPay.vue'),
+      meta: { title: '药品支付' },
+    },
     // {
     //   path: '/order/pay/result',
     //   component: () => import('@/views/Order/OrderPayResult.vue'),

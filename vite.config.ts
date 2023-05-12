@@ -9,7 +9,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     vue({
-      reactivityTransform: true,
+      reactivityTransform: true, //防止响应式变量 解构后出现响应式失效
     }),
     Components({
       dts: false,
