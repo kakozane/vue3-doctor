@@ -7,8 +7,9 @@ import { useRoute } from 'vue-router'
 import OrderMedical from './components/OrderMedical.vue'
 
 const route = useRoute()
-// 预支付信息
+// 预支付信息  处方药品信息
 const orderPre = ref<OrderPre>()
+// 获取信息函数
 const loadOrderPre = async () => {
   const res = await getMedicalOrderPre({
     prescriptionId: route.query.id as string,
@@ -20,7 +21,7 @@ const loadOrderPre = async () => {
 const address = ref<AddressItem>()
 const loadAddress = async () => {
   const addRes = await getAddresList()
-  // 如果有默认的收货地址就是它，如果没有就去第一个收货地址即可
+  // 如果有默认的收货地址就是它，如果没有第一个收货地址即可
   if (addRes.data.length) {
     const defAddress = addRes.data.find((item) => item.isDefault === 1)
     if (defAddress) address.value = defAddress
@@ -110,6 +111,7 @@ const onSubmit = async () => {
       pay-callback="/order/pay/result"
     ></cp-pay-sheet>
   </div>
+  <!-- 骨架屏 -->
   <div class="order-pay-page" v-else>
     <cp-nav-bar title="药品支付" />
     <van-skeleton title avatar row="2" style="margin-top: 15px"></van-skeleton>
