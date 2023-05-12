@@ -7,12 +7,12 @@ import { ref } from 'vue'
 // orderId 订单ID
 // actualPayment 实付金额
 // onClose 关闭前的函数
-const props = defineProps<{
-  show: boolean
-  orderId: string
-  actualPayment: number
-  onClose?: () => void
-  payCallback: string
+const { payCallback, orderId } = defineProps<{
+  show: boolean //控制支付弹层显示
+  orderId: string //支付需要使用的订单ID
+  actualPayment?: number // 支付钱数
+  onClose?: () => void // 支付窗口关闭控制
+  payCallback?: string //支付回跳地址
 }>()
 
 const emit = defineEmits<{
@@ -26,9 +26,9 @@ const pay = async () => {
   showLoadingToast({ message: '跳转支付', duration: 0 })
   const res = await getConsultOrderPayUrl({
     paymentMethod: paymentMethod.value,
-    orderId: props.orderId,
+    orderId: orderId,
     // payCallback: import.meta.env.VITE_APP_CALLBACK + props.payCallback,
-    payCallback: 'http://127.0.0.1:5173/room', //跳转到问诊室
+    payCallback: payCallback || 'http://127.0.0.1:5173/room', //跳转到问诊室
   })
   // 跳转到支付宝平台支付 成功后 跳转到问诊室
   window.location.href = res.data.payUrl

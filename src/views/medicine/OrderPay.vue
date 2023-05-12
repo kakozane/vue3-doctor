@@ -34,23 +34,25 @@ onMounted(() => {
   loadOrderPre()
 })
 
-// 创建订单
-const agree = ref(false)
-const loading = ref(false)
-const orderId = ref('')
-const show = ref(false)
+// 创建订单 进行支付
+const agree = ref(false) // 是否同意协议
+const loading = ref(false) //避免重复点击
+const orderId = ref('') // 订单ID
+const show = ref(false) // 控制支付弹层
 const onSubmit = async () => {
   if (!agree.value) return showToast('请勾选用户协议')
   if (!address.value?.id) return showToast('请选择收货地址')
   if (!orderPre.value?.id) return showToast('未找到处方')
 
+  // 没有生成药品订单ID
   if (!orderId.value) {
     try {
       loading.value = true
+      // 创建订单
       const res = await createMedicalOrder({
-        id: orderPre.value.id,
-        addressId: address.value.id,
-        couponId: orderPre.value.couponId,
+        id: orderPre.value.id, //处方ID
+        addressId: address.value.id, // 默认收货地址ID
+        couponId: orderPre.value.couponId, // 优惠券ID
       })
       orderId.value = res.data.id
       loading.value = false
@@ -61,6 +63,7 @@ const onSubmit = async () => {
       loading.value = false
     }
   } else {
+    // 已经有药品订单ID
     // 打开抽屉
     show.value = true
   }
@@ -108,7 +111,7 @@ const onSubmit = async () => {
       v-model:show="show"
       :order-id="orderId"
       :actual-payment="orderPre.actualPayment"
-      pay-callback="/order/pay/result"
+      pay-callback="http://127.0.0.1:5173/medicine/pay/result"
     ></cp-pay-sheet>
   </div>
   <!-- 骨架屏 -->
@@ -201,3 +204,4 @@ const onSubmit = async () => {
   }
 }
 </style>
+<!-- http://127.0.0.1:5173/room?orderId=6897173576949760&payResult=true&type=2 -->
