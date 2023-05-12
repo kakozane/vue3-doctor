@@ -26,6 +26,10 @@ const { loading: deleteLoading, deleteConsultOrder } = useDeleteOrder(() => {
 const { onShowPrescription } = useShowPrescription()
 
 // 复制
+/**
+ *copy函数 copied ref响应变量 true复制成功  false 复制失败
+ *isSupported 浏览器支不支持
+ */
 const { copy, isSupported } = useClipboard()
 const onCopy = async () => {
   if (!isSupported.value) return showToast('未授权，不支持')

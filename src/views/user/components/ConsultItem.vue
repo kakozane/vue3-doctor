@@ -52,7 +52,7 @@ const { onShowPrescription } = useShowPrescription()
         {{ item.statusValue }}
       </span>
     </div>
-    <!-- 患者信息 -->
+    <!-- 患者信息 $router是vue2组件实例 -->
     <div class="body" @click="$router.push(`/user/consult/${item.id}`)">
       <div class="body-row">
         <div class="body-label">病情描述</div>

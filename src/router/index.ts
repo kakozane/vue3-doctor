@@ -63,11 +63,11 @@ const router = createRouter({
       component: () => import('@/views/user/ConsultOrder.vue'),
       meta: { title: '问诊记录' },
     },
-    // {
-    //   path: '/user/consult/:id',
-    //   component: () => import('@/views/user/ConsultDetail.vue'),
-    //   meta: { title: '问诊详情' },
-    // },
+    {
+      path: '/user/consult/:id',
+      component: () => import('@/views/user/ConsultDetail.vue'),
+      meta: { title: '问诊详情' },
+    },
     // {
     //   path: '/order/pay',
     //   component: () => import('@/views/Order/OrderPay.vue'),
