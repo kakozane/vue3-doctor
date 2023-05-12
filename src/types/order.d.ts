@@ -99,6 +99,7 @@ export type Express = {
   statusValue: string
 }
 
+// 经纬度
 export type Location = {
   /** 经度 */
   longitude: string
@@ -114,7 +115,7 @@ export type Logistics = {
   /** 物流编号 */
   awbNo: string
   /** 最新物流状态 */
-  status: ExpressStatus
+  status: ExpressStatus // 1已发货 2已揽件 3运输中 4.派送中 5.已签收
   /** 最新物流状态文字 */
   statusValue: string
   /** 物流信息数组 */

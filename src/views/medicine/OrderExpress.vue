@@ -9,11 +9,11 @@ import endImg from '@/assets/end.png'
 import carImg from '@/assets/car.png'
 
 const route = useRoute()
-const logistics = ref<Logistics>()
+// 获取物流详情数据
+const express = ref<Logistics>()
 onMounted(async () => {
   const res = await getMedicalOrderLogistics(route.params.id as string)
-  logistics.value = res.data
-
+  express.value = res.data
   initMap()
 })
 
@@ -46,8 +46,8 @@ const initMap = () => {
         showTraffic: false,
         hideMarkers: true,
       })
-      if (logistics.value?.logisticsInfo && logistics.value.logisticsInfo.length >= 2) {
-        const list = [...logistics.value.logisticsInfo]
+      if (express.value?.logisticsInfo && express.value.logisticsInfo.length >= 2) {
+        const list = [...express.value.logisticsInfo]
         // 创建标记函数
         const getMarker = (point: Location, image: string, width = 25, height = 30) => {
           const icon = new AMap.Icon({
@@ -78,7 +78,7 @@ const initMap = () => {
           () => {
             // 规划完毕
             // 运输位置
-            const curr = logistics.value?.currentLocationInfo
+            const curr = express.value?.currentLocationInfo
             const currMarker = getMarker(curr!, carImg, 33, 20)
             map.add(currMarker)
             // 3s后定位当中间进行缩放
@@ -101,15 +101,16 @@ const initMap = () => {
       <!-- 配送状态title -->
       <div class="title">
         <van-icon name="arrow-left" @click="$router.back()" />
-        <span>{{ logistics?.statusValue }}</span>
+        <span>{{ express?.statusValue }}</span>
         <van-icon name="service" />
       </div>
       <!-- 物流信息 -->
       <div class="current">
-        <p class="status">订单派送中 预计{{ logistics?.estimatedTime }}送达</p>
+        <p class="status">订单{{ express?.statusValue }}中 预计{{ express?.estimatedTime }}送达</p>
         <p class="predict">
-          <span>{{ logistics?.name }}</span>
-          <span>{{ logistics?.awbNo }}</span>
+          <!-- 快递信息 -->
+          <span>{{ express?.name }}</span>
+          <span>{{ express?.awbNo }}</span>
         </p>
       </div>
     </div>
@@ -117,7 +118,7 @@ const initMap = () => {
     <div class="logistics">
       <p class="title">物流详情</p>
       <van-steps direction="vertical" :active="0">
-        <van-step v-for="item in logistics?.list" :key="item.id">
+        <van-step v-for="item in express?.list" :key="item.id">
           <p class="status">{{ item.statusValue }}</p>
           <p class="content">
             {{ item.content }}
