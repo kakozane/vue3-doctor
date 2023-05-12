@@ -3,6 +3,7 @@ import { getMedicalOrderLogistics } from '@/api/order'
 import type { Location, Logistics } from '@/types/order'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+// 高德地图
 import AMapLoader from '@amap/amap-jsapi-loader'
 import startImg from '@/assets/start.png'
 import endImg from '@/assets/end.png'
@@ -11,25 +12,27 @@ import carImg from '@/assets/car.png'
 const route = useRoute()
 // 获取物流详情数据
 const express = ref<Logistics>()
+// 组件初始化的时候：加载高德地图需要的资源
 onMounted(async () => {
   const res = await getMedicalOrderLogistics(route.params.id as string)
   express.value = res.data
   initMap()
 })
-
+// http://127.0.0.1:5173/medicine/express/6897245602689024
+// v2.0 需要配置安全密钥jscode
 window._AMapSecurityConfig = {
-  securityJsCode: '415e917da833efcf2d5b69f4d821784b',
+  securityJsCode: 'e52204c6c16eb7937769816e88c3a3ff',
 }
 const initMap = () => {
   AMapLoader.load({
-    key: '4eed3d61125c8b9c168fc22414aaef7e',
+    key: '44f5763073897cb6772265752e1da319',
     version: '2.0',
   }).then((AMap) => {
     // 初始化地图
     const map = new AMap.Map('map', {
       // 配置对象
-      mapStyle: 'amap://styles/whitesmoke',
-      zoom: 12,
+      mapStyle: 'amap://styles/whitesmoke', // 地图样式风格
+      zoom: 12, // 初始化地图层级
     })
     AMap.plugin('AMap.Driving', function () {
       // var driving = new AMap.Driving({
