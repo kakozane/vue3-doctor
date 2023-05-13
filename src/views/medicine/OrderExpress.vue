@@ -32,8 +32,9 @@ const initMap = () => {
     const map = new AMap.Map('map', {
       // 配置对象
       mapStyle: 'amap://styles/whitesmoke', // 地图样式风格
-      zoom: 12, // 初始化地图层级
+      zoom: 12, // 初始化地图层级  缩放级别
     })
+    // 异步加载插件plugin //绘制物流轨迹
     AMap.plugin('AMap.Driving', function () {
       // var driving = new AMap.Driving({
       //   // 驾车路线规划策略，AMap.DrivingPolicy.LEAST_TIME是最快捷模式
@@ -44,11 +45,13 @@ const initMap = () => {
       // driving.search(startLngLat, endLngLat, function (status, result) {
       //   // 未出错时，result即是对应的路线规划方案
       // })
+      // 创建路线导航类
       const driving = new AMap.Driving({
-        map,
-        showTraffic: false,
-        hideMarkers: true,
+        map, //指定哪个map
+        showTraffic: false, // 关闭轨迹中的交通情况
+        hideMarkers: true, // 关闭默认图标
       })
+      //自定义坐标点的图标
       if (express.value?.logisticsInfo && express.value.logisticsInfo.length >= 2) {
         const list = [...express.value.logisticsInfo]
         // 创建标记函数
@@ -65,22 +68,24 @@ const initMap = () => {
           })
           return marker
         }
-        // 起点
-        const start = list.shift()
+        // 轨迹起点
+        const start = list.shift() // 取数组第一个 取出后 数组就剩其他了
         const startMarker = getMarker(start!, startImg)
         map.add(startMarker)
-        // 终点
-        const end = list.pop()
+        // 轨迹终点
+        const end = list.pop() // 取数组最后一个 取出后 数组就剩其他了
         const endMarker = getMarker(end!, endImg)
         map.add(endMarker)
 
+        // 根据起点和终点经纬度规划驾车导航路线
         driving.search(
           [start?.longitude, start?.latitude],
           [end?.longitude, end?.latitude],
+          // 轨迹途径点 二维数组  [[],[]]
           { waypoints: list.map((item) => [item.longitude, item.latitude]) },
           () => {
             // 规划完毕
-            // 运输位置
+            // 运输位置  当前的位置
             const curr = express.value?.currentLocationInfo
             const currMarker = getMarker(curr!, carImg, 33, 20)
             map.add(currMarker)
